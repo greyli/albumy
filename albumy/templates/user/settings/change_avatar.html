@@ -1,0 +1,34 @@
+{% extends 'user/settings/base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}Change Avatar{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='jcrop/css/jquery.Jcrop.min.css') }}">
+{% endblock %}
+
+{% block setting_content %}
+    <div class="card w-100 bg-light">
+        <h3 class="card-header">Change Avatar</h3>
+        <div class="card-body">
+            {{ render_form(upload_form, action=url_for('.upload_avatar')) }}
+            <small class="text-muted">
+                Your file's size must be less than 3 MB, the allowed formats are png and jpg.
+            </small>
+        </div>
+        <div class="card-body">
+            {{ avatars.crop_box('main.get_avatar', current_user.avatar_raw) }}
+            {{ avatars.preview_box('main.get_avatar', current_user.avatar_raw) }}
+        </div>
+        <div class="card-body">
+            {{ render_form(crop_form, action=url_for('.crop_avatar')) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='jcrop/js/jquery.Jcrop.min.js') }}"></script>
+    {{ avatars.init_jcrop() }}
+{% endblock %}

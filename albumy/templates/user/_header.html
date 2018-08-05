@@ -4,7 +4,10 @@
 
 <div class="row">
     <div class="col-md-3">
-        <img class="img-fluid rounded" src="{{ url_for('main.get_avatar', filename=user.avatar_l) }}">
+        <a href="{% if current_user == user %}{{ url_for('.change_avatar') }}{% else %}#{% endif %}"
+           title="Change avatar">
+            <img class="img-fluid rounded" src="{{ url_for('main.get_avatar', filename=user.avatar_l) }}">
+        </a>
     </div>
     <div class="col-md-9">
         <h1>{{ user.name }}
@@ -27,6 +30,9 @@
         <div>
             <div class="float-right">
                 {{ follow_area(user) }}
+                {% if current_user.is_authenticated and user == current_user %}
+                    <a class="btn btn-outline-primary btn-sm" href="{{ url_for('.edit_profile') }}">Edit profile</a>
+                {% endif %}
             </div>
         </div>
     </div>

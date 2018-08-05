@@ -64,6 +64,9 @@
                                 <span class="oi oi-person"></span> My Home
                             </a>
                             <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url_for('user.edit_profile') }}">
+                                <span class="oi oi-cog"></span> Settings
+                            </a>
                             <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
                                 <span class="oi oi-power-standby"></span> Logout
                             </a>

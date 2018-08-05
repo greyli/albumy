@@ -24,6 +24,9 @@
             <div class="card bg-light w-100">
                 <div class="card-header">{{ notification_count }} unread notifications
                     <div class="float-right">
+                        <a class="btn btn-light btn-sm" href="{{ url_for('user.notification_setting') }}">
+                            <span class="oi oi-cog" aria-hidden="true"></span> Settings
+                        </a>
                         <form class="inline" method="post" action="{{ url_for('.read_all_notification') }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-light btn-sm">
