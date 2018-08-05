@@ -1,6 +1,32 @@
 {% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+{% from 'macros.html' import photo_card %}
 
 {% block title %}{{ user.name }}{% endblock %}
 
 {% block content %}
+    {% include 'user/_header.html' %}
+    <div class="row">
+        <div class="col-md-12">
+            {% if photos %}
+                {% for photo in photos %}
+                    {{ photo_card(photo) }}
+                {% endfor %}
+            {% else %}
+                <div class="tip text-center">
+                    <h3>No photos.</h3>
+                    {% if user == current_user %}
+                        <a class="btn btn-link" href="{{ url_for('main.upload') }}">Upload</a>
+                    {% else %}
+                        <a class="btn btn-link" href="{{ url_for('main.explore') }}">Explore</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if photos %}
+        <div class="page-footer">
+            {{ render_pagination(pagination, align='center') }}
+        </div>
+    {% endif %}
 {% endblock %}

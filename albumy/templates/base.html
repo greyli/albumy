@@ -54,6 +54,9 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" role="menu">
                             <h6 class="dropdown-header">Logged in as {{ current_user.username }}</h6>
+                            <a class="dropdown-item" href="{{ url_for('user.index', username=current_user.username) }}">
+                                <span class="oi oi-person"></span> My Home
+                            </a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
                                 <span class="oi oi-power-standby"></span> Logout

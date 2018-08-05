@@ -1,0 +1,32 @@
+{% from 'bootstrap/nav.html' import render_nav_item %}
+
+
+<div class="row">
+    <div class="col-md-3">
+        <img class="img-fluid rounded" src="{{ url_for('main.get_avatar', filename=user.avatar_l) }}">
+    </div>
+    <div class="col-md-9">
+        <h1>{{ user.name }}
+            <small class="text-muted">{{ user.username }}</small>
+        </h1>
+        {% if user.bio %}<p>{{ user.bio }}</p>{% endif %}
+        <p>
+            {% if user.website %}
+                <span class="oi oi-link-intact"></span>
+                <a href="{{ user.website }}" target="_blank">{{ user.website|truncate(30) }}</a>&nbsp;&nbsp;
+            {% endif %}
+            {% if user.location %}
+                <span class="oi oi-map-marker"></span>
+                <a href="https://www.google.com/maps?q={{ user.location }}"
+                   target="_blank">{{ user.location|truncate(30) }}</a>&nbsp;&nbsp;
+            {% endif %}
+            <span class="oi oi-calendar"></span>
+            Joined {{ moment(user.member_since).format('LL') }}
+        </p>
+    </div>
+</div>
+<div class="user-nav">
+    <ul class="nav nav-tabs">
+        {{ render_nav_item('user.index', 'Photo', user.photos|length, username=user.username) }}
+    </ul>
+</div>

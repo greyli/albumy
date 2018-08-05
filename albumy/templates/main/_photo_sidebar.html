@@ -1,0 +1,90 @@
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('.photo_previous', photo_id=photo.id) }}">&larr;Previous</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('.photo_next', photo_id=photo.id) }}">Next&rarr;</a>
+        </li>
+    </ul>
+</nav>
+<div class="card bg-light mb-3 w-100 sidebar-card">
+    <div class="card-body">
+        <div class="row">
+            <a href="{{ url_for('user.index', username=photo.author.username) }}">
+                <img class="sidebar-avatar rounded avatar-m"
+                     src="{{ url_for('main.get_avatar', filename=photo.author.avatar_m) }}">
+            </a>
+            <div class="sidebar-profile">
+                <h6 class="card-title">
+                    <a href="{{ url_for('user.index', username=photo.author.username) }}">{{ photo.author.name }}</a>
+                </h6>
+                <p class="card-subtitle mb-2 text-muted">{{ photo.author.username }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card bg-light mb-3 w-100">
+    <div class="card-body">
+        <div id="description">
+            <p>
+                {% if photo.description %}
+                    {{ photo.description }}
+                {% endif %}
+                {% if current_user == photo.author %}
+                    <a id="description-btn" href="#!">
+                        <small><span class="oi oi-pencil"></span> edit description</small>
+                    </a>
+                {% endif %}
+            </p>
+        </div>
+        {% if current_user == photo.author %}
+            <div id="description-form">
+                <form action="{{ url_for('.edit_description', photo_id=photo.id) }}" method="post">
+                    {{ description_form.csrf_token }}
+                    {{ render_field(description_form.description) }}
+                    <a class="btn btn-light btn-sm" id="cancel-description">Cancel</a>
+                    {{ render_field(description_form.submit, class='btn btn-success btn-sm') }}
+                </form>
+            </div>
+        {% endif %}
+        <div id="tags">
+            <p>
+                {% if photo.tags %}
+                    {% for tag in photo.tags %}
+                        <a class="badge badge-light"
+                           href="{{ url_for('.show_tag', tag_id=tag.id) }}" target="_blank"><span
+                                class="oi oi-tag"></span> {{ tag.name }}</a>
+                    {% endfor %}
+                {% endif %}
+                {% if current_user == photo.author %}
+                    <a id="tag-btn" href="#!">
+                        <small><span class="oi oi-pencil"></span> edit tag</small>
+                    </a>
+                {% endif %}
+            </p>
+        </div>
+        {% if current_user == photo.author %}
+            <div id="tag-form">
+                <form action="{{ url_for('.new_tag', photo_id=photo.id) }}" method="post">
+                    {{ tag_form.csrf_token }}
+                    {{ render_field(tag_form.tag) }}
+                    <a class="btn btn-light btn-sm" id="cancel-tag">Cancel</a>
+                    {{ render_field(tag_form.submit, class='btn btn-success btn-sm') }}
+                </form>
+                {% if photo.tags %}
+                    <hr>
+                    {% for tag in photo.tags %}
+                        <a class="dead-link" href="#!"
+                           data-href="{{ url_for('.delete_tag', photo_id=photo.id, tag_id=tag.id) }}"
+                           data-toggle="modal" data-target="#confirm-delete" title="Delete tag">
+                <span class="badge badge-danger">
+                {{ tag.name }} <span class="oi oi-trash" aria-hidden="true"></span>
+            </span>
+                        </a>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>

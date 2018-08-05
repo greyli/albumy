@@ -1,0 +1,123 @@
+<div class="comments" id="comments">
+    <h3>{{ photo.comments|length }} Comments
+        <small>
+            <a href="{{ url_for('.show_photo', photo_id=photo.id, page=pagination.pages or 1) }}#comment-form">latest</a>
+        </small>
+        {% if current_user == photo.author %}
+            <a class="btn btn-xs btn-link float-right" href="{{ url_for('.set_comment', photo_id=photo.id) }}">
+                {% if photo.can_comment %}Disable{% else %}Enable{% endif %} comment
+            </a>
+        {% endif %}
+    </h3>
+    <hr>
+    {% if comments %}
+        {% for comment in comments %}
+            <div class="comment">
+                <div class="comment-thumbnail">
+                    <a href="{{ url_for('user.index', username=comment.author.username) }}">
+                        <img class="rounded img-fluid avatar-s"
+                             src="{{ url_for('main.get_avatar', filename=comment.author.avatar_s) }}">
+                    </a>
+                </div>
+                <div class="comment-body">
+                    <h6>
+                        <a href="{{ url_for('user.index', username=comment.author.username) }}">
+                            {{ comment.author.name }}
+                        </a>
+                        {% if comment.author == photo.author %}
+                            <span class="badge badge-light">Author</span>
+                        {% endif %}
+                        <small data-toggle="tooltip" data-placement="top" data-timestamp="{{ comment.timestamp }}"
+                               data-delay="500">
+                            {{ moment(comment.timestamp).fromNow(refresh=True) }}
+                        </small>
+                        {% if current_user.is_authenticated %}
+                            <span class="float-right">
+                            <span class="dropdown">
+                                <button class="btn btn-sm btn-light" type="button" id="dropdownMenuButton"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                <span class="oi oi-ellipses"></span>
+                                </button>
+                                <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% if current_user != comment.author %}
+                                    <a class="dropdown-item btn"
+                                       href="{{ url_for('.reply_comment', comment_id=comment.id) }}">
+                                    <span class="oi oi-comment-square"></span> Reply
+                                </a>
+                                {% endif %}
+                                    {% if current_user == comment.author or current_user == photo.author %}
+                                        <a class="dropdown-item" data-toggle="modal" href="#!"
+                                           data-href="{{ url_for('.delete_comment', comment_id=comment.id) }}"
+                                           data-target="#confirm-delete">
+                                        <span class="oi oi-trash" aria-hidden="true"></span> Delete
+                                      </a>
+                                    {% endif %}
+                                    <form class="inline" method="post"
+                                          action="{{ url_for('.report_comment', comment_id=comment.id) }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="dropdown-item">
+                                        <span class="oi oi-warning" aria-hidden="true"></span> Report
+                                      </button>
+                                </form>
+                                </span>
+                                </span>
+                            </span>
+                        {% endif %}
+                    </h6>
+                    <p>
+                        {% if comment.replied %}
+                            Reply
+                            <a href="{{ url_for('user.index', username=comment.replied.author.username) }}">{{ comment.replied.author.name }}</a>
+                            :
+                        {%- endif -%}
+                        {{ comment.body }}
+                    </p>
+                </div>
+            </div>
+            <hr>
+        {% endfor %}
+        <div class="page-footer">
+            {{ render_pagination(pagination) }}
+        </div>
+    {% else %}
+        <p class="tip">No comments.</p>
+    {% endif %}
+
+    {% if photo.can_comment %}
+        {% if current_user.is_authenticated %}
+            {% if current_user.can('COMMENT') %}
+                {% if request.args.get('reply') %}
+                    <div class="alert alert-dark">
+                        Reply to {{ request.args.get('author') }}:
+                        <a class="float-right" href="{{ url_for('.show_photo', photo_id=photo.id) }}">Cancel</a>
+                    </div>
+                {% endif %}
+                <div class="comment-form-area">
+                    <div class="comment-form-thumbnail">
+                        <img class="rounded img-fluid avatar-s"
+                             src="{{ url_for('main.get_avatar', filename=current_user.avatar_m) }}">
+                    </div>
+                    <div class="comment-form" id="comment-form">
+                        {{ render_form(comment_form, action=url_for('.new_comment', photo_id=photo.id, page=pagination.pages),
+                        extra_classes="text-right") }}
+                    </div>
+                </div>
+            {% else %}
+                <p class="tip">
+                    No permission.
+                </p>
+            {% endif %}
+        {% else %}
+            <p class="tip">
+                <a href="{{ url_for('auth.login') }}">Login</a>
+                or
+                <a href="{{ url_for('auth.register') }}">Register</a> to leave a comment.
+            </p>
+        {% endif %}
+    {% else %}
+        <p class="tip">
+            Comment disabled.
+        </p>
+    {% endif %}
+</div>

@@ -15,7 +15,7 @@ from albumy.blueprints.auth import auth_bp
 from albumy.blueprints.main import main_bp
 from albumy.blueprints.user import user_bp
 from albumy.extensions import bootstrap, db, login_manager, mail, dropzone, moment, avatars, csrf
-from albumy.models import Role, User, Photo, Permission
+from albumy.models import Role, User, Photo, Tag, Comment, Permission
 from albumy.settings import config
 
 
@@ -57,7 +57,7 @@ def register_blueprints(app):
 def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
-        return dict(db=db, User=User, Photo=Photo)
+        return dict(db=db, User=User, Photo=Photo, Tag=Tag, Comment=Comment)
 
 
 def register_template_context(app):
@@ -116,10 +116,12 @@ def register_commands(app):
     @app.cli.command()
     @click.option('--user', default=10, help='Quantity of users, default is 10.')
     @click.option('--photo', default=30, help='Quantity of photos, default is 500.')
-    def forge(user, photo):
+    @click.option('--tag', default=20, help='Quantity of tags, default is 500.')
+    @click.option('--comment', default=100, help='Quantity of comments, default is 500.')
+    def forge(user, photo, tag, comment):
         """Generate fake data."""
 
-        from albumy.fakes import fake_admin, fake_photo, fake_user
+        from albumy.fakes import fake_admin, fake_comment, fake_photo, fake_tag, fake_user
 
         db.drop_all()
         db.create_all()
@@ -130,6 +132,10 @@ def register_commands(app):
         fake_admin()
         click.echo('Generating %d users...' % user)
         fake_user(user)
+        click.echo('Generating %d tags...' % tag)
+        fake_tag(tag)
         click.echo('Generating %d photos...' % photo)
         fake_photo(photo)
+        click.echo('Generating %d comments...' % comment)
+        fake_comment(comment)
         click.echo('Done.')
