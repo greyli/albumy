@@ -59,6 +59,18 @@ class Role(db.Model):
 
 
 # relationship object
+class Follow(db.Model):
+    follower_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                            primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('user.id'),
+                            primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    follower = db.relationship('User', foreign_keys=[follower_id], back_populates='following', lazy='joined')
+    followed = db.relationship('User', foreign_keys=[followed_id], back_populates='followers', lazy='joined')
+
+
+# relationship object
 class Collect(db.Model):
     collector_id = db.Column(db.Integer, db.ForeignKey('user.id'),
                              primary_key=True)
@@ -92,10 +104,15 @@ class User(db.Model, UserMixin):
     photos = db.relationship('Photo', back_populates='author', cascade='all')
     comments = db.relationship('Comment', back_populates='author', cascade='all')
     collections = db.relationship('Collect', back_populates='collector', cascade='all')
+    following = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower',
+                                lazy='dynamic', cascade='all')
+    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], back_populates='followed',
+                                lazy='dynamic', cascade='all')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         self.generate_avatar()
+        self.follow(self)  # follow self
         self.set_role()
 
     def set_password(self, password):
@@ -111,6 +128,26 @@ class User(db.Model, UserMixin):
 
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def follow(self, user):
+        if not self.is_following(user):
+            follow = Follow(follower=self, followed=user)
+            db.session.add(follow)
+            db.session.commit()
+
+    def unfollow(self, user):
+        follow = self.following.filter_by(followed_id=user.id).first()
+        if follow:
+            db.session.delete(follow)
+            db.session.commit()
+
+    def is_following(self, user):
+        if user.id is None:  # when follow self, user.id will be None
+            return False
+        return self.following.filter_by(followed_id=user.id).first() is not None
+
+    def is_followed_by(self, user):
+        return self.followers.filter_by(follower_id=user.id).first() is not None
 
     def collect(self, photo):
         if not self.is_collecting(photo):

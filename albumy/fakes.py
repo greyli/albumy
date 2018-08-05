@@ -49,6 +49,13 @@ def fake_user(count=10):
             db.session.rollback()
 
 
+def fake_follow(count=30):
+    for i in range(count):
+        user = User.query.get(random.randint(1, User.query.count()))
+        user.follow(User.query.get(random.randint(1, User.query.count())))
+    db.session.commit()
+
+
 def fake_tag(count=20):
     for i in range(count):
         tag = Tag(name=fake.word())

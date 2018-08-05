@@ -18,5 +18,38 @@
         <h6>
             <a href="{{ url_for('user.index', username=user.username) }}">{{ user.name }}</a>
         </h6>
+        {{ follow_area(user) }}
     </div>
+{% endmacro %}
+
+{% macro follow_area(user) %}
+    {% if current_user.is_authenticated %}
+        {% if user != current_user %}
+            {% if current_user.is_following(user) %}
+                <form class="inline" method="post"
+                      action="{{ url_for('user.unfollow', username=user.username, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-dark btn-sm">Unfollow</button>
+                    {% if current_user.is_followed_by(user) %}
+                        <p class="badge badge-light">Follow each other</p>
+                    {% endif %}
+                </form>
+            {% else %}
+                <form class="inline" method="post"
+                      action="{{ url_for('user.follow', username=user.username, next=request.full_path) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+                    {% if current_user.is_followed_by(user) %}
+                        <p class="badge badge-light">Follows you</p>
+                    {% endif %}
+                </form>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <form class="inline" method="post"
+              action="{{ url_for('user.follow', username=user.username) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-primary btn-sm">Follow</button>
+        </form>
+    {% endif %}
 {% endmacro %}

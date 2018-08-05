@@ -1,3 +1,5 @@
+{% from 'macros.html' import follow_area with context %}
+
 <nav aria-label="Page navigation">
     <ul class="pagination">
         <li class="page-item">
@@ -20,6 +22,7 @@
                     <a href="{{ url_for('user.index', username=photo.author.username) }}">{{ photo.author.name }}</a>
                 </h6>
                 <p class="card-subtitle mb-2 text-muted">{{ photo.author.username }}</p>
+                {{ follow_area(photo.author) }}
             </div>
         </div>
     </div>
