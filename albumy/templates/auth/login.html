@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-8">
+                <img src="{{ url_for('static', filename='images/index.jpg') }}" class="rounded img-fluid">
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-3 w-100 bg-light">
+                    <div class="card-header"><h4>Log in to Albumy</h4></div>
+                    <div class="card-body">
+                        {{ render_form(form) }}
+                        <hr>
+                        <p class="small"><a href="{{ url_for('.register') }}">Register new account</a></p>
+                        <p class="small"><a href="{{ url_for('.forget_password') }}">Forget password</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

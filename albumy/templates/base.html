@@ -40,6 +40,26 @@
                         </button>
                     </form>
                 </div>
+                <div class="navbar-nav ml-auto">
+                {% if current_user.is_authenticated %}
+                    <div class="dropdown nav-item">
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-expanded="false">
+                            {{ current_user.name }}<span class="caret"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" role="menu">
+                            <h6 class="dropdown-header">Logged in as {{ current_user.username }}</h6>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                <span class="oi oi-power-standby"></span> Logout
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a class="btn btn-outline-primary" href="{{ url_for('auth.login') }}">Login</a>&nbsp;&nbsp;
+                    <a class="btn btn-primary" href="{{ url_for('auth.register') }}">Join Albumy</a>
+                {% endif %}
+                </div>
             </div>
         </div>
     </nav>

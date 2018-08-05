@@ -10,8 +10,11 @@ import os
 import click
 from flask import Flask, render_template
 
+from albumy.blueprints.auth import auth_bp
 from albumy.blueprints.main import main_bp
-from albumy.extensions import bootstrap, db, mail, moment
+from albumy.blueprints.user import user_bp
+from albumy.extensions import bootstrap, db, login_manager, mail, moment
+from albumy.models import User
 from albumy.settings import config
 
 
@@ -36,18 +39,21 @@ def create_app(config_name=None):
 def register_extensions(app):
     bootstrap.init_app(app)
     db.init_app(app)
+    login_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
 
 
 def register_blueprints(app):
     app.register_blueprint(main_bp)
+    app.register_blueprint(user_bp, url_prefix='/user')
+    app.register_blueprint(auth_bp, url_prefix='/auth')
 
 
 def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
-        return dict(db=db)
+        return dict(db=db, User=User)
 
 
 def register_template_context(app):
@@ -97,6 +103,17 @@ def register_commands(app):
         click.echo('Done.')
 
     @app.cli.command()
-    def forge():
+    @click.option('--user', default=10, help='Quantity of users, default is 10.')
+    def forge(user):
         """Generate fake data."""
-        pass
+
+        from albumy.fakes import fake_admin, fake_user
+
+        db.drop_all()
+        db.create_all()
+
+        click.echo('Generating the administrator...')
+        fake_admin()
+        click.echo('Generating %d users...' % user)
+        fake_user(user)
+        click.echo('Done.')
