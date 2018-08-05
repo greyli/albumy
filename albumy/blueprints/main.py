@@ -14,7 +14,7 @@ from flask_login import login_required, current_user
 from albumy.decorators import confirm_required, permission_required
 from albumy.extensions import db
 from albumy.forms.main import DescriptionForm, TagForm, CommentForm
-from albumy.models import Photo, Tag, Comment
+from albumy.models import Photo, Tag, Collect, Comment
 from albumy.utils import rename_image, resize_image, flash_errors
 
 main_bp = Blueprint('main', __name__)
@@ -102,6 +102,34 @@ def photo_previous(photo_id):
     return redirect(url_for('.show_photo', photo_id=photo_p.id))
 
 
+@main_bp.route('/collect/<int:photo_id>', methods=['POST'])
+@login_required
+@confirm_required
+@permission_required('COLLECT')
+def collect(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    if current_user.is_collecting(photo):
+        flash('Already collected.', 'info')
+        return redirect(url_for('.show_photo', photo_id=photo_id))
+
+    current_user.collect(photo)
+    flash('Photo collected.', 'success')
+    return redirect(url_for('.show_photo', photo_id=photo_id))
+
+
+@main_bp.route('/uncollect/<int:photo_id>', methods=['POST'])
+@login_required
+def uncollect(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    if not current_user.is_collecting(photo):
+        flash('Not collect yet.', 'info')
+        return redirect(url_for('main.show_photo', photo_id=photo_id))
+
+    current_user.uncollect(photo)
+    flash('Photo uncollected.', 'info')
+    return redirect(url_for('.show_photo', photo_id=photo_id))
+
+
 @main_bp.route('/report/comment/<int:comment_id>', methods=['POST'])
 @login_required
 @confirm_required
@@ -122,6 +150,16 @@ def report_photo(photo_id):
     db.session.commit()
     flash('Photo reported.', 'success')
     return redirect(url_for('.show_photo', photo_id=photo.id))
+
+
+@main_bp.route('/photo/<int:photo_id>/collectors')
+def show_collectors(photo_id):
+    photo = Photo.query.get_or_404(photo_id)
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['ALBUMY_USER_PER_PAGE']
+    pagination = Collect.query.with_parent(photo).order_by(Collect.timestamp.asc()).paginate(page, per_page)
+    collects = pagination.items
+    return render_template('main/collectors.html', collects=collects, photo=photo, pagination=pagination)
 
 
 @main_bp.route('/photo/<int:photo_id>/description', methods=['POST'])

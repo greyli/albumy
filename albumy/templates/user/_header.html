@@ -28,5 +28,6 @@
 <div class="user-nav">
     <ul class="nav nav-tabs">
         {{ render_nav_item('user.index', 'Photo', user.photos|length, username=user.username) }}
+        {{ render_nav_item('user.show_collections', 'Collections', user.collections|length, username=user.username) }}
     </ul>
 </div>
