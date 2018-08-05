@@ -6,7 +6,7 @@
     :license: MIT, see LICENSE for more details.
 """
 from flask import render_template, flash, redirect, url_for, current_app, request, Blueprint
-from flask_login import login_required, current_user, fresh_login_required
+from flask_login import login_required, current_user, fresh_login_required, logout_user
 
 from albumy.decorators import confirm_required, permission_required
 from albumy.emails import send_confirm_email
@@ -24,6 +24,12 @@ user_bp = Blueprint('user', __name__)
 @user_bp.route('/<username>')
 def index(username):
     user = User.query.filter_by(username=username).first_or_404()
+    if user == current_user and user.locked:
+        flash('Your account is locked.', 'danger')
+
+    if user == current_user and not user.active:
+        logout_user()
+
     page = request.args.get('page', 1, type=int)
     per_page = current_app.config['ALBUMY_PHOTO_PER_PAGE']
     pagination = Photo.query.with_parent(user).order_by(Photo.timestamp.desc()).paginate(page, per_page)

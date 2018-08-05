@@ -1,0 +1,113 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {{ render_breadcrumb_item('admin.index', 'Dashboard Home') }}
+            {{ render_breadcrumb_item('admin.manage_user', 'Manage User') }}
+        </ol>
+    </nav>
+    <div class="page-header">
+        <h1>Users
+            <small class="text-muted">{{ pagination.total }}</small>
+        </h1>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Filter </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.args.get('filter', 'all') == 'all' %}active{% endif %}"
+                   href="{{ url_for('admin.manage_user', filter='all') }}">All</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.args.get('filter') == 'locked' %}active{% endif %}"
+                   href="{{ url_for('admin.manage_user', filter='locked') }}">Locked</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.args.get('filter') == 'blocked' %}active{% endif %}"
+                   href="{{ url_for('admin.manage_user', filter='blocked') }}">Blocked</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.args.get('filter') == 'administrator' %}active{% endif %}"
+                   href="{{ url_for('admin.manage_user', filter='administrator') }}">Administrator</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.args.get('filter') == 'moderator' %}active{% endif %}"
+                   href="{{ url_for('admin.manage_user', filter='moderator') }}">Moderator</a>
+            </li>
+        </ul>
+    </div>
+    {% if users %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Avatars</th>
+                <th>Name/username</th>
+                <th>Role</th>
+                <th>Bio</th>
+                <th>City</th>
+                <th>Date</th>
+                <th>Photos</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            {% for user in users %}
+                <tr>
+                    <td><img src="{{ url_for('main.get_avatar', filename=user.avatar_s) }}"></td>
+                    <td>{{ user.name }}<br>{{ user.username }}</td>
+                    <td>{{ user.role.name }}</td>
+                    <td>{{ user.bio }}</td>
+                    <td>{{ user.location }}</td>
+                    <td>{{ moment(user.member_since).format('LL') }}</td>
+                    <td>
+                        <a href="{{ url_for('user.index', username=user.username) }}">{{ user.photos|length }}</a>
+                    </td>
+                    <td>
+                        {% if user.locked %}
+                            <form class="inline" action="{{ url_for('admin.unlock_user', user_id=user.id) }}"
+                                  method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="submit" onclick="return confirm('Are you sure?');"
+                                       class="btn btn-secondary btn-sm" value="Unlock">
+                            </form>
+                        {% else %}
+                            <form class="inline" action="{{ url_for('admin.lock_user', user_id=user.id) }}"
+                                  method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="submit" onclick="return confirm('Are you sure?');"
+                                       class="btn btn-warning btn-sm" value="Lock">
+                            </form>
+                        {% endif %}
+                        {% if user.active %}
+                            <form class="inline" action="{{ url_for('admin.block_user', user_id=user.id) }}"
+                                  method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="submit" onclick="return confirm('Are you sure?');"
+                                       class="btn btn-warning btn-sm" value="Block">
+                            </form>
+                        {% else %}
+                            <form class="inline" action="{{ url_for('admin.unblock_user', user_id=user.id) }}"
+                                  method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="submit" onclick="return confirm('Are you sure?');"
+                                       class="btn btn-secondary btn-sm" value="Unblock">
+                            </form>
+                        {% endif %}
+                        <a class="btn btn-light btn-sm" href="mailto:{{ user.email }}">Email</a>
+                        {% if current_user.is_admin %}
+                            <a class="btn btn-warning btn-sm"
+                               href="{{ url_for('admin.edit_profile_admin', user_id=user.id) }}">Edit
+                                profile</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="page-footer">{{ render_pagination(pagination) }}</div>
+    {% else %}
+        <div class="tip"><h5>No users.</h5></div>
+    {% endif %}
+{% endblock %}

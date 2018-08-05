@@ -242,7 +242,7 @@ def show_collectors(photo_id):
 @login_required
 def edit_description(photo_id):
     photo = Photo.query.get_or_404(photo_id)
-    if current_user != photo.author:
+    if current_user != photo.author and not current_user.can('MODERATE'):
         abort(403)
 
     form = DescriptionForm()
@@ -287,7 +287,7 @@ def new_comment(photo_id):
 @login_required
 def new_tag(photo_id):
     photo = Photo.query.get_or_404(photo_id)
-    if current_user != photo.author:
+    if current_user != photo.author and not current_user.can('MODERATE'):
         abort(403)
 
     form = TagForm()
@@ -338,7 +338,7 @@ def reply_comment(comment_id):
 @login_required
 def delete_photo(photo_id):
     photo = Photo.query.get_or_404(photo_id)
-    if current_user != photo.author:
+    if current_user != photo.author and not current_user.can('MODERATE'):
         abort(403)
 
     db.session.delete(photo)
@@ -358,7 +358,8 @@ def delete_photo(photo_id):
 @login_required
 def delete_comment(comment_id):
     comment = Comment.query.get_or_404(comment_id)
-    if current_user != comment.author and current_user != comment.photo.author:
+    if current_user != comment.author and current_user != comment.photo.author \
+            and not current_user.can('MODERATE'):
         abort(403)
     db.session.delete(comment)
     db.session.commit()
@@ -387,7 +388,7 @@ def show_tag(tag_id, order):
 def delete_tag(photo_id, tag_id):
     tag = Tag.query.get_or_404(tag_id)
     photo = Photo.query.get_or_404(photo_id)
-    if current_user != photo.author:
+    if current_user != photo.author and not current_user.can('MODERATE'):
         abort(403)
     photo.tags.remove(tag)
     db.session.commit()

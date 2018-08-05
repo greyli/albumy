@@ -1,0 +1,47 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}Manage Tags{% endblock %}
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {{ render_breadcrumb_item('admin.index', 'Dashboard Home') }}
+            {{ render_breadcrumb_item('admin.manage_tag', 'Manage Tag') }}
+        </ol>
+    </nav>
+    <div class="page-header">
+        <h1>Tags
+            <small class="text-muted">{{ pagination.total }}</small>
+        </h1>
+    </div>
+    {% if tags %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Photos</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            {% for tag in tags %}
+                <tr>
+                    <td>{{ tag.id }}</td>
+                    <td>{{ tag.name }}</td>
+                    <td><a href="{{ url_for('main.show_tag', tag_id=tag.id) }}">{{ tag.photos|length }}</a></td>
+                    <td>
+                        <form class="inline" action="{{ url_for('admin.delete_tag', tag_id=tag.id) }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="submit" onclick="return confirm('Are you sure?');"
+                                   class="btn btn-danger btn-sm" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="page-footer">{{ render_pagination(pagination) }}</div>
+    {% else %}
+        <div class="tip"><h5>No tags.</h5></div>
+    {% endif %}
+{% endblock %}

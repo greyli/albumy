@@ -9,6 +9,12 @@
     <div class="page-header">
         <h1>#{{ tag.name }}
             <small class="text-muted">{{ tag.photos|length }} photos</small>
+            {% if current_user.can('MODERATE') %}
+                <a class="btn btn-danger btn-sm" href="{{ url_for('admin.delete_tag', tag_id=tag.id) }}"
+                   onclick="return confirm('Are you sure?')">
+                    Delete
+                </a>
+            {% endif %}
             <span class="dropdown">
             <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">

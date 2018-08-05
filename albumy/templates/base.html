@@ -67,6 +67,11 @@
                             <a class="dropdown-item" href="{{ url_for('user.edit_profile') }}">
                                 <span class="oi oi-cog"></span> Settings
                             </a>
+                            {% if current_user.can('MODERATE') %}
+                                <a class="dropdown-item" href="{{ url_for('admin.index') }}">
+                                    <span class="oi oi-dashboard"></span> Dashboard
+                                </a>
+                            {% endif %}
                             <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
                                 <span class="oi oi-power-standby"></span> Logout
                             </a>

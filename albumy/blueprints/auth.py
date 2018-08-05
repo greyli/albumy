@@ -27,9 +27,12 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower()).first()
         if user is not None and user.validate_password(form.password.data):
-            login_user(user, form.remember_me.data)
-            flash('Login success.', 'info')
-            return redirect_back()
+            if login_user(user, form.remember_me.data):
+                flash('Login success.', 'info')
+                return redirect_back()
+            else:
+                flash('Your account is blocked.', 'warning')
+                return redirect(url_for('main.index'))
         flash('Invalid email or password.', 'warning')
     return render_template('auth/login.html', form=form)
 

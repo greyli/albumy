@@ -1,0 +1,72 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}Manage Comments{% endblock %}
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {{ render_breadcrumb_item('admin.index', 'Dashboard Home') }}
+            {{ render_breadcrumb_item('admin.manage_comment', 'Manage Comment') }}
+        </ol>
+    </nav>
+    <div class="page-header">
+        <h1>Comments
+            <small class="text-muted">{{ pagination.total }}</small>
+            <span class="dropdown">
+            <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                Order by {{ order_rule }} <span class="oi oi-elevator"></span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% if order_rule == 'flag' %}
+                    <a class="dropdown-item" href="{{ url_for('.manage_comment', order='by_time') }}">Order by
+                    Time</a>
+                {% else %}
+                    <a class="dropdown-item" href="{{ url_for('.manage_comment', order='by_flag') }}">Order by
+                    Flag</a>
+                {% endif %}
+            </div>
+        </span>
+        </h1>
+    </div>
+    {% if comments %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Body</th>
+                <th>Author</th>
+                <th>Image</th>
+                <th>Reported</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            {% for comment in comments %}
+                <tr>
+                    <td>{{ comment.body }}</td>
+                    <td>
+                        <a href="{{ url_for('user.index', username=comment.author.username) }}">{{ comment.author.name }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ url_for('main.show_photo', photo_id=comment.photo.id) }}">Photo {{ comment.photo.id }}</a>
+                    </td>
+                    <td>{{ comment.flag }}</td>
+                    <td>{{ moment(comment.timestamp).format('LL') }}</td>
+                    <td>
+                        <form class="inline" method="post"
+                              action="{{ url_for('main.delete_comment', comment_id=comment.id, next=request.full_path) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure?');">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="page-footer">{{ render_pagination(pagination) }}</div>
+    {% else %}
+        <div class="tip"><h5>No comments.</h5></div>
+    {% endif %}
+{% endblock %}

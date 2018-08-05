@@ -28,6 +28,39 @@
             Joined {{ moment(user.member_since).format('LL') }}
         </p>
         <div>
+            {% if current_user != user %}
+                {% if current_user.can('MODERATE') %}
+                    {% if user.locked %}
+                        <form class="inline" action="{{ url_for('admin.unlock_user', user_id=user.id) }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="submit" class="btn btn-secondary btn-sm" value="Unlock">
+                        </form>
+                    {% else %}
+                        <form class="inline" action="{{ url_for('admin.lock_user', user_id=user.id) }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="submit" class="btn btn-warning btn-sm" value="Lock">
+                        </form>
+                    {% endif %}
+                    {% if user.active %}
+                        <form class="inline" action="{{ url_for('admin.block_user', user_id=user.id) }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="submit" class="btn btn-warning btn-sm" value="Block">
+                        </form>
+                    {% else %}
+                        <form class="inline" action="{{ url_for('admin.unblock_user', user_id=user.id) }}"
+                              method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="submit" class="btn btn-secondary btn-sm" value="Unblock">
+                        </form>
+                    {% endif %}
+                    <a class="btn btn-light btn-sm" href="mailto:{{ user.email }}">Email</a>
+                {% endif %}
+
+                {% if current_user.is_admin %}
+                    <a class="btn btn-warning btn-sm" href="{{ url_for('admin.edit_profile_admin', user_id=user.id) }}">Edit
+                        profile</a>
+                {% endif %}
+            {% endif %}
             <div class="float-right">
                 {{ follow_area(user) }}
                 {% if current_user.is_authenticated and user == current_user %}

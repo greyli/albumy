@@ -1,0 +1,90 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}Manage Photos{% endblock %}
+
+{% block content %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            {{ render_breadcrumb_item('admin.index', 'Dashboard Home') }}
+            {{ render_breadcrumb_item('admin.manage_photo', 'Manage Photo') }}
+        </ol>
+    </nav>
+    <div class="page-header">
+        <h1>Photos
+            <small class="text-muted">{{ pagination.total }}</small>
+            <span class="dropdown">
+            <button class="btn btn-secondary btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                Order by {{ order_rule }} <span class="oi oi-elevator"></span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% if order_rule == 'flag' %}
+                    <a class="dropdown-item" href="{{ url_for('.manage_photo', order='by_time') }}">Order by
+                    Time</a>
+                {% else %}
+                    <a class="dropdown-item" href="{{ url_for('.manage_photo', order='by_flag') }}">Order by
+                    Flag</a>
+                {% endif %}
+            </div>
+        </span>
+        </h1>
+    </div>
+    {% if photos %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>Description</th>
+                <th>Tag</th>
+                <th>Author</th>
+                <th>Reported</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            {% for photo in photos %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('main.show_photo', photo_id=photo.id) }}">
+                            <img src="{{ url_for('main.get_image', filename=photo.filename_s) }}" width="250">
+                        </a>
+                    </td>
+                    <td>{{ photo.description }}</td>
+                    <td>
+                        {% if photo.tags %}
+                            {% for tag in photo.tags %}
+                                <form class="inline" method="post"
+                                      action="{{ url_for('admin.delete_tag', tag_id=tag.id, next=request.full_path) }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                    <button type="submit" class="btn badge badge-danger mb-1"
+                                            onclick="return confirm('Are you sure?');">
+                                        {{ tag.name }} <span class="oi oi-trash" aria-hidden="true">
+                                </span>
+                                    </button>
+                                </form>
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('user.index', username=photo.author.username) }}">{{ photo.author.name }}</a>
+                    </td>
+                    <td>{{ photo.flag }}</td>
+                    <td>{{ moment(photo.timestamp).format('LL') }}</td>
+                    <td>
+                        <form class="inline" method="post"
+                              action="{{ url_for('main.delete_photo', photo_id=photo.id, next=request.full_path) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure?');">Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div class="page-footer">{{ render_pagination(pagination) }}</div>
+    {% else %}
+        <div class="tip"><h5>No photos.</h5></div>
+    {% endif %}
+{% endblock %}

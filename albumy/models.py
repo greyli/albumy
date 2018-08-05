@@ -99,6 +99,8 @@ class User(db.Model, UserMixin):
     avatar_raw = db.Column(db.String(64))
 
     confirmed = db.Column(db.Boolean, default=False)
+    locked = db.Column(db.Boolean, default=False)
+    active = db.Column(db.Boolean, default=True)
 
     public_collections = db.Column(db.Boolean, default=True)
     receive_comment_notification = db.Column(db.Boolean, default=True)
@@ -176,6 +178,24 @@ class User(db.Model, UserMixin):
     def is_collecting(self, photo):
         return Collect.query.with_parent(self).filter_by(collected_id=photo.id).first() is not None
 
+    def lock(self):
+        self.locked = True
+        self.role = Role.query.filter_by(name='Locked').first()
+        db.session.commit()
+
+    def unlock(self):
+        self.locked = False
+        self.role = Role.query.filter_by(name='User').first()
+        db.session.commit()
+
+    def block(self):
+        self.active = False
+        db.session.commit()
+
+    def unblock(self):
+        self.active = True
+        db.session.commit()
+
     def generate_avatar(self):
         avatar = Identicon()
         filenames = avatar.generate(text=self.username)
@@ -187,6 +207,10 @@ class User(db.Model, UserMixin):
     @property
     def is_admin(self):
         return self.role.name == 'Administrator'
+
+    @property
+    def is_active(self):
+        return self.active
 
     def can(self, permission_name):
         permission = Permission.query.filter_by(name=permission_name).first()
