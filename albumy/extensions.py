@@ -5,6 +5,7 @@
     :copyright: © 2018 Grey Li <withlihui@gmail.com>
     :license: MIT, see LICENSE for more details.
 """
+from flask_avatars import Avatars
 from flask_bootstrap import Bootstrap
 from flask_dropzone import Dropzone
 from flask_login import LoginManager, AnonymousUserMixin
@@ -20,6 +21,7 @@ login_manager = LoginManager()
 mail = Mail()
 dropzone = Dropzone()
 moment = Moment()
+avatars = Avatars()
 csrf = CSRFProtect()
 
 

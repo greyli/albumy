@@ -7,7 +7,7 @@
 """
 import os
 
-from flask import render_template, current_app, request, Blueprint
+from flask import render_template, current_app, send_from_directory, request, Blueprint
 from flask_login import login_required, current_user
 
 from albumy.decorators import confirm_required, permission_required
@@ -26,6 +26,11 @@ def index():
 @main_bp.route('/explore')
 def explore():
     return render_template('main/explore.html')
+
+
+@main_bp.route('/avatars/<path:filename>')
+def get_avatar(filename):
+    return send_from_directory(current_app.config['AVATARS_SAVE_PATH'], filename)
 
 
 @main_bp.route('/upload', methods=['GET', 'POST'])

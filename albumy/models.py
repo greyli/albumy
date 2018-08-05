@@ -8,6 +8,7 @@
 from datetime import datetime
 
 from flask import current_app
+from flask_avatars import Identicon
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -66,6 +67,9 @@ class User(db.Model, UserMixin):
     bio = db.Column(db.String(120))
     location = db.Column(db.String(50))
     member_since = db.Column(db.DateTime, default=datetime.utcnow)
+    avatar_s = db.Column(db.String(64))
+    avatar_m = db.Column(db.String(64))
+    avatar_l = db.Column(db.String(64))
 
     confirmed = db.Column(db.Boolean, default=False)
 
@@ -76,6 +80,7 @@ class User(db.Model, UserMixin):
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
+        self.generate_avatar()
         self.set_role()
 
     def set_password(self, password):
@@ -91,6 +96,14 @@ class User(db.Model, UserMixin):
 
     def validate_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_avatar(self):
+        avatar = Identicon()
+        filenames = avatar.generate(text=self.username)
+        self.avatar_s = filenames[0]
+        self.avatar_m = filenames[1]
+        self.avatar_l = filenames[2]
+        db.session.commit()
 
     @property
     def is_admin(self):
