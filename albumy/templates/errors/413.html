@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}413 Error{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-md-center">
+        <div class="card w-50 bg-light">
+            <img class="card-img-top img-fluid" src="{{ url_for('static', filename='images/error.jpg') }}">
+            <div class="card-body">
+                <h5 class="card-title">413 Error</h5>
+                <p class="card-text">Request Entity Too Large</p>
+            </div>
+            <div class="card-footer">
+                <div class="float-right">
+                    <a class="btn btn-primary" href="{{ url_for('main.index') }}">Return Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
