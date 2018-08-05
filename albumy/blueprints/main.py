@@ -10,11 +10,12 @@ import os
 from flask import render_template, flash, redirect, url_for, current_app, \
     send_from_directory, request, abort, Blueprint
 from flask_login import login_required, current_user
+from sqlalchemy.sql.expression import func
 
 from albumy.decorators import confirm_required, permission_required
 from albumy.extensions import db
 from albumy.forms.main import DescriptionForm, TagForm, CommentForm
-from albumy.models import Photo, Tag, Collect, Comment, Notification
+from albumy.models import Photo, Tag, Follow, Collect, Comment, Notification
 from albumy.notifications import push_comment_notification, push_collect_notification
 from albumy.utils import rename_image, resize_image, flash_errors
 
@@ -23,12 +24,26 @@ main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
-    return render_template('main/index.html')
+    if current_user.is_authenticated:
+        page = request.args.get('page', 1, type=int)
+        per_page = current_app.config['ALBUMY_PHOTO_PER_PAGE']
+        pagination = Photo.query \
+            .join(Follow, Follow.followed_id == Photo.author_id) \
+            .filter(Follow.follower_id == current_user.id) \
+            .order_by(Photo.timestamp.desc()) \
+            .paginate(page, per_page)
+        photos = pagination.items
+    else:
+        pagination = None
+        photos = None
+    tags = Tag.query.join(Tag.photos).group_by(Tag.id).order_by(func.count(Photo.id).desc()).limit(10)
+    return render_template('main/index.html', pagination=pagination, photos=photos, tags=tags, Collect=Collect)
 
 
 @main_bp.route('/explore')
 def explore():
-    return render_template('main/explore.html')
+    photos = Photo.query.order_by(func.random()).limit(12)
+    return render_template('main/explore.html', photos=photos)
 
 
 @main_bp.route('/notifications')

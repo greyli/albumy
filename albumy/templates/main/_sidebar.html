@@ -1,0 +1,32 @@
+<div class="card bg-light mb-3 w-100 sidebar-nav">
+    <div class="card-body">
+        <div class="row">
+            <a href="{{ url_for('user.index', username=current_user.username) }}">
+                <img class="rounded avatar-s" style="margin-left: 15px; position: absolute"
+                     src="{{ url_for('main.get_avatar', filename=current_user.avatar_m) }}">
+            </a>
+            <div class="sidebar-nav-name">
+                <h6 class="card-title"><a
+                        href="{{ url_for('user.index', username=current_user.username) }}">{{ current_user.name }}
+                </a></h6>
+                <p class="card-subtitle mb-2 text-muted">{{ current_user.username }}</p>
+            </div>
+        </div>
+        <a class="card-link" href="{{ url_for('user.index', username=current_user.username) }}">
+            <span class="oi oi-home"></span> My Photos
+        </a><br>
+        <a class="card-link" href="{{ url_for('user.show_collections', username=current_user.username) }}">
+            <span class="oi oi-star"></span> My Collections
+        </a>
+    </div>
+</div>
+<div class="card bg-light mb-3 w-100">
+    <div class="card-header">Hot Tags</div>
+    <div class="list-group">
+        {% for tag in tags %}
+            <a class="list-group-item" href="{{ url_for('.show_tag', tag_id=tag.id) }}">{{ tag.name }}
+                <span class="badge badge-pill">{{ tag.photos|length }}</span>
+            </a>
+        {% endfor %}
+    </div>
+</div>

@@ -102,6 +102,17 @@ $(function () {
         });
     }
 
+    function update_collectors_count(id) {
+        $.ajax({
+            type: 'GET',
+            url: $('#collectors-count-' + id).data('href'),
+            success: function (data) {
+                console.log(data);
+                $('#collectors-count-' + id).text(data.count);
+            }
+        });
+    }
+
     function update_notifications_count() {
         var $el = $('#notification-badge');
         $.ajax({
@@ -150,9 +161,42 @@ $(function () {
         });
     }
 
+    function collect(e) {
+        var $el = $(e.target);
+        var id = $el.data('id');
+
+        $.ajax({
+            type: 'POST',
+            url: $el.data('href'),
+            success: function (data) {
+                $el.prev().show();
+                $el.hide();
+                update_collectors_count(id);
+                toast(data.message);
+            }
+        });
+    }
+
+    function uncollect(e) {
+        var $el = $(e.target);
+        var id = $el.data('id');
+        $.ajax({
+            type: 'POST',
+            url: $el.data('href'),
+            success: function (data) {
+                $el.next().show();
+                $el.hide();
+                update_collectors_count(id);
+                toast(data.message);
+            }
+        });
+    }
+
     $('.profile-popover').hover(show_profile_popover.bind(this), hide_profile_popover.bind(this));
     $(document).on('click', '.follow-btn', follow.bind(this));
     $(document).on('click', '.unfollow-btn', unfollow.bind(this));
+    $(document).on('click', '.collect-btn', collect.bind(this));
+    $(document).on('click', '.uncollect-btn', uncollect.bind(this));
 
     // hide or show tag edit form
     $('#tag-btn').click(function () {

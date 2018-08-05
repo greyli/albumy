@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
+{% from 'macros.html' import photo_card with context %}
 
 {% block title %}Explore{% endblock %}
 
 {% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            {% for photo in photos %}
+                {{ photo_card(photo) }}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="text-center">
+        <a class="btn btn-primary" href="{{ url_for('.explore') }}">
+            <span class="oi oi-loop-circular"></span> Change
+        </a>
+    </div>
 {% endblock %}

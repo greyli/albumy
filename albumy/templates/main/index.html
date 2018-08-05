@@ -1,8 +1,91 @@
 {% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+{% from 'macros.html' import photo_card with context %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
+{% if current_user.is_authenticated %}
+    <div class="row justify-content-md-center">
+        <div class="col-md-8">
+            {% if photos %}
+                {% for photo in photos %}
+                    <div class="card mb-3 w-100 bg-light">
+                        <div class="card-header">
+                            <a class="dead-link" href="{{ url_for('user.index', username=photo.author.username) }}">
+                                <img class="rounded img-fluid avatar-s profile-popover"
+                                     data-href="{{ url_for('ajax.get_profile', user_id=photo.author.id) }}"
+                                     src="{{ url_for('main.get_avatar', filename=photo.author.avatar_m) }}">
+                            </a>
+                            <a class="profile-popover trend-card-avatar"
+                               data-href="{{ url_for('ajax.get_profile', user_id=photo.author.id) }}"
+                               href="{{ url_for('user.index', username=photo.author.username) }}">{{ photo.author.name }}</a>
+                            <span class="float-right">
+                <small data-toggle="tooltip" data-placement="top" data-timestamp="{{ photo.timestamp }}"
+                       data-delay="500">
+                    {{ moment(photo.timestamp).fromNow(refresh=True) }}</small></span>
+                        </div>
+                        <div class="card-body">
+                            <div class="" align="center">
+                                <a class="thumbnail" href="{{ url_for('.show_photo', photo_id=photo.id) }}"
+                                   target="_blank">
+                                    <img class="img-fluid"
+                                         src="{{ url_for('.get_image', filename=photo.filename_m) }}">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="oi oi-star"></span>
+                            <span id="collectors-count-{{ photo.id }}"
+                                  data-href="{{ url_for('ajax.collectors_count', photo_id=photo.id) }}">
+                                {{ photo.collectors|length }}
+                            </span>
+                            <span class="oi oi-comment-square"></span> {{ photo.comments|length }}
+                            <div class="float-right">
+                                {% if current_user.is_authenticated %}
+                                    <button class="{% if not current_user.is_collecting(photo) %}hide{% endif %}
+                                     btn btn-outline-secondary btn-sm uncollect-btn"
+                                            data-href="{{ url_for('ajax.uncollect', photo_id=photo.id) }}"
+                                            data-id="{{ photo.id }}">
+                                        <span class="oi oi-x"></span> Uncollect
+                                    </button>
+                                    <button class="{% if current_user.is_collecting(photo) %}hide{% endif %}
+                                     btn btn-outline-primary btn-sm collect-btn"
+                                            data-href="{{ url_for('ajax.collect', photo_id=photo.id) }}"
+                                            data-id="{{ photo.id }}">
+                                        <span class="oi oi-star"></span> Collect
+                                    </button>
+                                {% else %}
+                                    <form class="inline" method="post"
+                                          action="{{ url_for('main.collect', photo_id=photo.id) }}">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">
+                                            <span class="oi oi-star"></span> Collect
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                            {% if photo.description %}
+                                <p class="card-text">{{ photo.description }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="tip text-center">
+                    <h3>No trends.</h3>
+                    <p><a href="{{ url_for('.explore') }}">Explore</a></p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-md-3">
+            {% include 'main/_sidebar.html' %}
+        </div>
+    </div>
+    {% if photos %}
+        {{ render_pagination(pagination, align='center') }}
+    {% endif %}
+{% else %}
     <div class="jumbotron">
         <div class="row">
             <div class="col-md-8">
@@ -15,4 +98,5 @@
             </div>
         </div>
     </div>
+{% endif %}
 {% endblock %}
