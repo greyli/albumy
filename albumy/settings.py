@@ -36,6 +36,13 @@ class BaseConfig:
     ALBUMY_MANAGE_COMMENT_PER_PAGE = 30
     ALBUMY_SEARCH_RESULT_PER_PAGE = 20
     ALBUMY_MAIL_SUBJECT_PREFIX = '[Albumy]'
+    ALBUMY_UPLOAD_PATH = os.path.join(basedir, 'uploads')
+    ALBUMY_PHOTO_SIZE = {'small': 400,
+                         'medium': 800}
+    ALBUMY_PHOTO_SUFFIX = {
+        ALBUMY_PHOTO_SIZE['small']: '_s',  # thumbnail
+        ALBUMY_PHOTO_SIZE['medium']: '_m',  # display
+    }
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024  # file size exceed to 3 Mb will return a 413 error response.
@@ -48,6 +55,11 @@ class BaseConfig:
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = ('Albumy Admin', MAIL_USERNAME)
+
+    DROPZONE_ALLOWED_FILE_TYPE = 'image'
+    DROPZONE_MAX_FILE_SIZE = 3
+    DROPZONE_MAX_FILES = 30
+    DROPZONE_ENABLE_CSRF = True
 
 
 class DevelopmentConfig(BaseConfig):

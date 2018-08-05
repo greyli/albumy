@@ -8,7 +8,7 @@
             <img class="card-img-top img-fluid" src="{{ url_for('static', filename='images/error.jpg') }}">
             <div class="card-body">
                 <h5 class="card-title">400 Error</h5>
-                <p class="card-text">Bad Request</p>
+                <p class="card-text">{{ description|default('Bad Request') }}</p>
             </div>
             <div class="card-footer">
                 <div class="float-right">

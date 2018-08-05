@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dropzone.min.css') }}" type="text/css">
+    {{ dropzone.style('margin: 20px 0; border: 2px dashed #0087F7; min-height: 400px;') }}
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Upload</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {{ dropzone.create(action='main.upload') }}
+            <a class="btn btn-light float-right" href="{{ url_for('user.index', username=current_user.username) }}">
+                Done
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/dropzone.min.js') }}"></script>
+    {{ dropzone.config() }}
+{% endblock %}

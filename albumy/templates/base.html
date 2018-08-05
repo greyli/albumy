@@ -42,6 +42,9 @@
                 </div>
                 <div class="navbar-nav ml-auto">
                 {% if current_user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{{ url_for('main.upload') }}" title="Upload">
+                        <span class="oi oi-cloud-upload"></span>&nbsp;&nbsp;
+                    </a>
                     <div class="dropdown nav-item">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-expanded="false">
