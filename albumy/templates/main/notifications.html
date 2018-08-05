@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Notifications</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="nav nav-pills flex-column" role="tablist" aria-orientation="vertical">
+                <a class="nav-item nav-link {% if request.args.get('filter') != 'unread' %}active{% endif %}"
+                   href="{{ url_for('.show_notifications', filter='all') }}">
+                    All
+                </a>
+                <a class="nav-item nav-link {% if request.args.get('filter') == 'unread' %}active{% endif %}"
+                   href="{{ url_for('.show_notifications', filter='unread') }}">
+                    Unread
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card bg-light w-100">
+                <div class="card-header">{{ notification_count }} unread notifications
+                    <div class="float-right">
+                        <form class="inline" method="post" action="{{ url_for('.read_all_notification') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-light btn-sm">
+                                <span class="oi oi-check" aria-hidden="true"></span> Read all
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if notifications %}
+                        <ul class="list-group">
+                            {% for notification in notifications %}
+                                <li class="list-group-item">
+                                    {{ notification.message|safe }}
+                                    <span class="float-right">
+                                        {{ moment(notification.timestamp).fromNow(refresh=True) }}
+                                        {% if notification.is_read == False %}
+                                            <form class="inline"
+                                                  action="{{ url_for('.read_notification', notification_id=notification.id) }}"
+                                                  method="post">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn btn-light btn-sm">
+                                                    <span class="oi oi-check" aria-hidden="true"></span>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="text-right page-footer">
+                            {{ render_pagination(pagination) }}
+                        </div>
+                    {% else %}
+                        <div class="tip text-center">
+                            <h6>No notifications.</h6>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

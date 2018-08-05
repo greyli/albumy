@@ -103,6 +103,7 @@ class User(db.Model, UserMixin):
     role = db.relationship('Role', back_populates='users')
     photos = db.relationship('Photo', back_populates='author', cascade='all')
     comments = db.relationship('Comment', back_populates='author', cascade='all')
+    notifications = db.relationship('Notification', back_populates='receiver', cascade='all')
     collections = db.relationship('Collect', back_populates='collector', cascade='all')
     following = db.relationship('Follow', foreign_keys=[Follow.follower_id], back_populates='follower',
                                 lazy='dynamic', cascade='all')
@@ -225,6 +226,17 @@ class Comment(db.Model):
     author = db.relationship('User', back_populates='comments')
     replies = db.relationship('Comment', back_populates='replied', cascade='all')
     replied = db.relationship('Comment', back_populates='replies', remote_side=[id])
+
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    is_read = db.Column(db.Boolean, default=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    receiver = db.relationship('User', back_populates='notifications')
 
 
 @db.event.listens_for(Photo, 'after_delete', named=True)

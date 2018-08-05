@@ -102,6 +102,22 @@ $(function () {
         });
     }
 
+    function update_notifications_count() {
+        var $el = $('#notification-badge');
+        $.ajax({
+            type: 'GET',
+            url: $el.data('href'),
+            success: function (data) {
+                if (data.count === 0) {
+                    $('#notification-badge').hide();
+                } else {
+                    $el.show();
+                    $el.text(data.count)
+                }
+            }
+        });
+    }
+
     function follow(e) {
         var $el = $(e.target);
         var id = $el.data('id');
@@ -160,6 +176,10 @@ $(function () {
     $('#confirm-delete').on('show.bs.modal', function (e) {
         $('.delete-form').attr('action', $(e.relatedTarget).data('href'));
     });
+
+    if (is_authenticated) {
+        setInterval(update_notifications_count, 30000);
+    }
 
     $("[data-toggle='tooltip']").tooltip({title: moment($(this).data('timestamp')).format('lll')})
 

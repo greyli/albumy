@@ -9,6 +9,7 @@ import os
 
 import click
 from flask import Flask, render_template
+from flask_login import current_user
 from flask_wtf.csrf import CSRFError
 
 from albumy.blueprints.ajax import ajax_bp
@@ -16,7 +17,7 @@ from albumy.blueprints.auth import auth_bp
 from albumy.blueprints.main import main_bp
 from albumy.blueprints.user import user_bp
 from albumy.extensions import bootstrap, db, login_manager, mail, dropzone, moment, avatars, csrf
-from albumy.models import Role, User, Photo, Tag, Follow, Comment, Collect, Permission
+from albumy.models import Role, User, Photo, Tag, Follow, Notification, Comment, Collect, Permission
 from albumy.settings import config
 
 
@@ -60,11 +61,18 @@ def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
         return dict(db=db, User=User, Photo=Photo, Tag=Tag,
-                    Follow=Follow, Collect=Collect, Comment=Comment)
+                    Follow=Follow, Collect=Collect, Comment=Comment,
+                    Notification=Notification)
 
 
 def register_template_context(app):
-    pass
+    @app.context_processor
+    def make_template_context():
+        if current_user.is_authenticated:
+            notification_count = Notification.query.with_parent(current_user).filter_by(is_read=False).count()
+        else:
+            notification_count = None
+        return dict(notification_count=notification_count)
 
 
 def register_errorhandlers(app):
