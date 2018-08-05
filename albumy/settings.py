@@ -64,6 +64,8 @@ class BaseConfig:
     DROPZONE_MAX_FILES = 30
     DROPZONE_ENABLE_CSRF = True
 
+    WHOOSHEE_MIN_STRING_LEN = 1
+
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = \
