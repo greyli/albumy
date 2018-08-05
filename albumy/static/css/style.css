@@ -259,3 +259,18 @@ footer {
     display: none;
     margin: 20px 0;
 }
+
+#toast { /* form w3school.com */
+    display: none;
+    min-width: 200px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 10px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+}

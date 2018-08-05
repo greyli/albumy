@@ -1,0 +1,13 @@
+<div class="popup-card">
+    <img class="rounded img-fluid avatar-s popup-avatar" src="{{ url_for('main.get_avatar', filename=user.avatar_m) }}">
+    <div class="popup-profile">
+        <h6>{{ user.name }}</h6>
+        <p class="text-muted">{{ user.username }}</p>
+    </div>
+    <p class="card-text">
+        <a href="{{ url_for('user.index', username=user.username) }}">
+            <strong>{{ user.photos|length }}</strong> Photos
+        </a>&nbsp;
+    </p>
+    <a href="{{ url_for('user.index', username=user.username) }}" class="btn btn-light btn-sm">Homepage</a>
+</div>
