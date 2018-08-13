@@ -17,7 +17,7 @@
                     <a href="{{ url_for('user.index', username=comment.author.username) }}">
                         <img class="rounded img-fluid avatar-s profile-popover"
                              data-href="{{ url_for('ajax.get_profile', user_id=comment.author.id) }}"
-                             src="{{ url_for('main.get_avatar', filename=comment.author.avatar_s) }}">
+                             src="{{ url_for('main.get_avatar', filename=comment.author.avatar_m) }}">
                     </a>
                 </div>
                 <div class="comment-body">
