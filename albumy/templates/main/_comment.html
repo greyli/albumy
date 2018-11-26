@@ -52,20 +52,22 @@
                                     <span class="oi oi-comment-square"></span> Reply
                                 </a>
                                 {% endif %}
-                                    {% if current_user == comment.author or current_user == photo.author or current_user.can('MODERATE') %}
-                                        <a class="dropdown-item" data-toggle="modal" href="#!"
-                                           data-href="{{ url_for('.delete_comment', comment_id=comment.id) }}"
-                                           data-target="#confirm-delete">
-                                        <span class="oi oi-trash" aria-hidden="true"></span> Delete
-                                      </a>
-                                    {% endif %}
-                                    <form class="inline" method="post"
-                                          action="{{ url_for('.report_comment', comment_id=comment.id) }}">
+                                {% if current_user == comment.author or current_user == photo.author or current_user.can('MODERATE') %}
+                                    <a class="dropdown-item" data-toggle="modal" href="#!"
+                                       data-href="{{ url_for('.delete_comment', comment_id=comment.id) }}"
+                                       data-target="#confirm-delete">
+                                    <span class="oi oi-trash" aria-hidden="true"></span> Delete
+                                  </a>
+                                {% endif %}
+                                {% if current_user != comment.author %}
+                                <form class="inline" method="post"
+                                      action="{{ url_for('.report_comment', comment_id=comment.id) }}">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="dropdown-item">
+                                    <button type="submit" class="dropdown-item">
                                         <span class="oi oi-warning" aria-hidden="true"></span> Report
                                       </button>
                                 </form>
+                                {% endif %}
                                 </span>
                                 </span>
                             </span>
@@ -74,9 +76,8 @@
                     <p>
                         {% if comment.replied %}
                             Reply
-                            <a href="{{ url_for('user.index', username=comment.replied.author.username) }}">{{ comment.replied.author.name }}</a>
-                            :
-                        {%- endif -%}
+                            <a href="{{ url_for('user.index', username=comment.replied.author.username) }}">{{ comment.replied.author.name }}</a>:
+                        {% endif %}
                         {{ comment.body }}
                     </p>
                 </div>
@@ -105,7 +106,8 @@
                              src="{{ url_for('main.get_avatar', filename=current_user.avatar_m) }}">
                     </div>
                     <div class="comment-form" id="comment-form">
-                        {{ render_form(comment_form, action=url_for('.new_comment', photo_id=photo.id, page=pagination.pages),
+                        {{ render_form(comment_form, action=url_for('.new_comment', photo_id=photo.id, page=pagination.pages or 1,
+                        reply=request.args.get('reply')),
                         extra_classes="text-right") }}
                     </div>
                 </div>

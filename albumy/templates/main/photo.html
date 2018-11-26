@@ -17,7 +17,7 @@
                 <a class="btn btn-danger btn-sm text-white" data-toggle="modal" data-target="#confirm-delete"
                    data-href="{{ url_for('.delete_photo', photo_id=photo.id) }}">Delete</a>
             {% endif %}
-            {% if current_user.is_authenticated %}
+            {% if current_user.is_authenticated and current_user != photo.author %}
                 <form class="inline" method="post" action="{{ url_for('.report_photo', photo_id=photo.id) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-link btn-sm">Report</button>
