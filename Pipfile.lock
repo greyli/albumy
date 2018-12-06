@@ -22,11 +22,11 @@
         },
         "bootstrap-flask": {
             "hashes": [
-                "sha256:2d5f929927e275ebe50b6cee410024f6b68046e8611b24db4d6c484a4d1966c2",
-                "sha256:6ff61ddd7cb0ec88a89310686c219a10d62e927a1c1ad43e056daedeaa190ec9"
+                "sha256:1f7462261b8104687807ce74b397270e7ade07c491ad7d53f215940d8433d756",
+                "sha256:ce5cf19c46b8d385923dc2f9ca76b92fc08c1a8d7dcb5d177325a85a94d71045"
             ],
             "index": "pypi",
-            "version": "==1.0.4"
+            "version": "==1.0.9"
         },
         "click": {
             "hashes": [
@@ -161,11 +161,11 @@
         },
         "python-dotenv": {
             "hashes": [
-                "sha256:38f22d75f1180256e60c8b06aa06f5254479c1bf5947430c97e3d737d90e8731",
-                "sha256:52e8c56e7c362fe9082abc949ea5fed6993c3651e059df0d7c8e18883827d737"
+                "sha256:4f3582904d08dac5ab4c9aa44cb17ce056c9a35e585cfda6183d80054d247307",
+                "sha256:cb8cd327109898c7725f76c5256a081e8a9efe72ebbf127f8d1221ceb7f38bf2"
             ],
             "index": "pypi",
-            "version": "==0.9.0"
+            "version": "==0.10.0"
         },
         "sqlalchemy": {
             "hashes": [
