@@ -1,0 +1,7 @@
+Hello {{ user.username }},
+
+Please visit the link below to verify your new email address:
+
+    {{ url_for('user.change_email', token=token, _external=True) }}
+
+(Please do not reply to this notification, this inbox is not monitored.)

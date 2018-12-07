@@ -9,7 +9,7 @@ from flask import render_template, flash, redirect, url_for, current_app, reques
 from flask_login import login_required, current_user, fresh_login_required, logout_user
 
 from albumy.decorators import confirm_required, permission_required
-from albumy.emails import send_confirm_email
+from albumy.emails import send_change_email_email
 from albumy.extensions import db, avatars
 from albumy.forms.user import EditProfileForm, UploadAvatarForm, CropAvatarForm, ChangeEmailForm, \
     ChangePasswordForm, NotificationSettingForm, PrivacySettingForm, DeleteAccountForm
@@ -180,7 +180,7 @@ def change_email_request():
     form = ChangeEmailForm()
     if form.validate_on_submit():
         token = generate_token(user=current_user, operation=Operations.CHANGE_EMAIL, new_email=form.email.data.lower())
-        send_confirm_email(to=form.email.data, user=current_user, token=token)
+        send_change_email_email(to=form.email.data, user=current_user, token=token)
         flash('Confirm email sent, check your inbox.', 'info')
         return redirect(url_for('.index', username=current_user.username))
     return render_template('user/settings/change_email.html', form=form)
