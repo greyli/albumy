@@ -162,7 +162,7 @@ $(function () {
     }
 
     function collect(e) {
-        var $el = $(e.target).data('href') ? $(el.target) : $(el.target).parent('.collect-btn');
+        var $el = $(e.target).data('href') ? $(e.target) : $(e.target).parent('.collect-btn');
         var id = $el.data('id');
 
         $.ajax({
@@ -178,7 +178,7 @@ $(function () {
     }
 
     function uncollect(e) {
-        var $el = $(e.target).data('href') ? $(el.target) : $(el.target).parent('.uncollect-btn');
+        var $el = $(e.target).data('href') ? $(e.target) : $(e.target).parent('.uncollect-btn');
         var id = $el.data('id');
         $.ajax({
             type: 'POST',
