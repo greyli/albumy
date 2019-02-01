@@ -166,11 +166,14 @@ def crop_avatar():
 @fresh_login_required
 def change_password():
     form = ChangePasswordForm()
-    if form.validate_on_submit() and current_user.validate_password(form.old_password.data):
-        current_user.set_password(form.password.data)
-        db.session.commit()
-        flash('Password updated.', 'success')
-        return redirect(url_for('.index', username=current_user.username))
+    if form.validate_on_submit():
+        if current_user.validate_password(form.old_password.data):
+            current_user.set_password(form.password.data)
+            db.session.commit()
+            flash('Password updated.', 'success')
+            return redirect(url_for('.index', username=current_user.username))
+        else:
+            flash('Old password is incorrect.', 'warning')
     return render_template('user/settings/change_password.html', form=form)
 
 
