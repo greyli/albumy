@@ -49,6 +49,10 @@ class ChangeEmailForm(FlaskForm):
     email = StringField('New Email', validators=[DataRequired(), Length(1, 254), Email()])
     submit = SubmitField()
 
+    def validate_email(self, field):
+        if User.query.filter_by(email=field.data.lower()).first():
+            raise ValidationError('The email is already in use.')
+
 
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField('Old Password', validators=[DataRequired()])
