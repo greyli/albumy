@@ -31,5 +31,5 @@ class EditProfileAdminForm(EditProfileForm):
             raise ValidationError('The username is already in use.')
 
     def validate_email(self, field):
-        if field.data != self.user.email and User.query.filter_by(email=field.data).first():
+        if field.data != self.user.email and User.query.filter_by(email=field.data.lower()).first():
             raise ValidationError('The email is already in use.')
