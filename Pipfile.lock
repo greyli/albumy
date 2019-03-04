@@ -45,11 +45,11 @@
         },
         "flask-avatars": {
             "hashes": [
-                "sha256:0f5138843b9ec6c9e68afb521c263a0fe3a72faa468d30c47f1d8d0849cf50a8",
-                "sha256:5725b0eb6dc4b2289d6126926681c73e496d43df4cb027e5250ff944d53c697d"
+                "sha256:c83081641ee834063416d9437be7d947cdebac51125c5f561d75e7e60f14b21b",
+                "sha256:e49e9a333b76fb131f4b66c1221b505ab9b3dd0e47a27d6a23e5d24dd2fcb7b2"
             ],
             "index": "pypi",
-            "version": "==0.2.0"
+            "version": "==0.2.2"
         },
         "flask-dropzone": {
             "hashes": [
