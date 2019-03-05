@@ -48,7 +48,7 @@ def explore():
 
 @main_bp.route('/search')
 def search():
-    q = request.args.get('q', '')
+    q = request.args.get('q', '').strip()
     if q == '':
         flash('Enter keyword about photo, user or tag.', 'warning')
         return redirect_back()
