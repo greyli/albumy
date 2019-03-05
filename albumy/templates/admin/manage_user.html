@@ -66,6 +66,7 @@
                         <a href="{{ url_for('user.index', username=user.username) }}">{{ user.photos|length }}</a>
                     </td>
                     <td>
+                    {% if user.role.name not in ['Administrator', 'Moderator'] %}
                         {% if user.locked %}
                             <form class="inline" action="{{ url_for('admin.unlock_user', user_id=user.id) }}"
                                   method="post">
@@ -96,6 +97,7 @@
                                        class="btn btn-secondary btn-sm" value="Unblock">
                             </form>
                         {% endif %}
+                    {% endif %}
                         <a class="btn btn-light btn-sm" href="mailto:{{ user.email }}">Email</a>
                         {% if current_user.is_admin %}
                             <a class="btn btn-warning btn-sm"
