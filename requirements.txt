@@ -1,0 +1,31 @@
+blinker==1.4
+bootstrap-flask==1.0.9
+click==6.7
+flask-avatars==0.2.2
+flask-dropzone==1.5.1
+flask-login==0.4.1
+flask-mail==0.9.1
+flask-moment==0.6.0
+flask-sqlalchemy==2.3.2
+flask-whooshee==0.6.0
+flask-wtf==0.14.2
+flask==1.0.2
+itsdangerous==0.24
+jinja2==2.10
+markupsafe==1.0
+pillow==5.2.0
+python-dotenv==0.10.0
+sqlalchemy==1.2.10
+werkzeug==0.14.1
+whoosh==2.7.4
+wtforms==2.2.1
+# dev
+argh==0.26.2
+faker==0.8.17
+ipaddress==1.0.22 ; python_version == '2.7'
+pathtools==0.1.2
+python-dateutil==2.7.3
+pyyaml==3.13
+six==1.11.0
+text-unidecode==1.2
+watchdog==0.8.3
