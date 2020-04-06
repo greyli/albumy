@@ -67,7 +67,7 @@
                 <div class="card-header"><span class="oi oi-image"></span> Photos</div>
                 <div class="card-body">
                     <h4 class="card-title">Total: {{ photo_count|default('0') }}</h4>
-                    <p class="card-text">Reported: {{ reported_photo_count|default('0') }}</p>
+                    <p class="card-text">Reported: {{ reported_photos_count|default('0') }}</p>
                     <a class="btn btn-primary text-white" href="{{ url_for('.manage_photo') }}">Manage</a>
                 </div>
             </div>
