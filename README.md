@@ -6,7 +6,7 @@
 
 Demo: http://albumy.helloflask.com
 
-![Screenshot](http://helloflask.com/screenshots/albumy.png)
+![Screenshot](https://helloflask.com/screenshots/albumy.png)
 
 ## Installation
 
