@@ -15,7 +15,8 @@
                             <a class="dead-link" href="{{ url_for('user.index', username=photo.author.username) }}">
                                 <img class="rounded img-fluid avatar-s profile-popover"
                                      data-href="{{ url_for('ajax.get_profile', user_id=photo.author.id) }}"
-                                     src="{{ url_for('main.get_avatar', filename=photo.author.avatar_m) }}">
+                                     src="{{ url_for('main.get_avatar', filename=photo.author.avatar_m) }}"
+                                >
                             </a>
                             <a class="profile-popover trend-card-avatar"
                                data-href="{{ url_for('ajax.get_profile', user_id=photo.author.id) }}"
@@ -30,7 +31,9 @@
                                 <a class="thumbnail" href="{{ url_for('.show_photo', photo_id=photo.id) }}"
                                    target="_blank">
                                     <img class="img-fluid"
-                                         src="{{ url_for('.get_image', filename=photo.filename_m) }}">
+                                         src="{{ url_for('.get_image', filename=photo.filename_m) }}"
+                                         alt="{{photo.description}}"
+                                    >
                                 </a>
                             </div>
                         </div>
