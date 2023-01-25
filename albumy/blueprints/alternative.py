@@ -6,7 +6,7 @@ from azure.cognitiveservices.vision.computervision.models import OperationStatus
 
 
 def get_alternative_text(local_path: str):
-    secrete = json.load(open('env/secrete.json'))
+    secrete = json.load(open('albumy/blueprints/secrete.json'))
     API_KEY = secrete['API_KEY']
     END_POINT = secrete['END_POINT']
     client = ComputerVisionClient(END_POINT, CognitiveServicesCredentials(API_KEY))
