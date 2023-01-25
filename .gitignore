@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 
-secrete.json
+albumy/blueprints/secrete.json
 
 __pycache__/
 *.py[cod]
