@@ -12,6 +12,7 @@ from flask import render_template, flash, redirect, url_for, current_app, \
 from flask_login import login_required, current_user
 from sqlalchemy.sql.expression import func
 
+from albumy.blueprints.alternative import get_alternative_text
 from albumy.decorators import confirm_required, permission_required
 from albumy.extensions import db
 from albumy.forms.main import DescriptionForm, TagForm, CommentForm
@@ -122,11 +123,16 @@ def upload():
     if request.method == 'POST' and 'file' in request.files:
         f = request.files.get('file')
         filename = rename_image(f.filename)
-        f.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename))
+        # save picture locally
+        local_path = os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename)
+        f.save(local_path)
+        file_alternative_text = get_alternative_text(local_path)
         filename_s = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['small'])
         filename_m = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['medium'])
+        # add description field here
         photo = Photo(
             filename=filename,
+            description=file_alternative_text,
             filename_s=filename_s,
             filename_m=filename_m,
             author=current_user._get_current_object()
@@ -134,6 +140,7 @@ def upload():
         db.session.add(photo)
         db.session.commit()
     return render_template('main/upload.html')
+
 
 
 @main_bp.route('/photo/<int:photo_id>')

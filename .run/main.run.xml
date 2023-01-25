@@ -9,7 +9,7 @@
       <env name="FLASK_ENV" value="development" />
     </envs>
     <option name="SDK_HOME" value="/usr/local/bin/python3.9" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../albumy-worked/albumy/blueprints" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/albumy/blueprints" />
     <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
