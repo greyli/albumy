@@ -1,4 +1,7 @@
 # Byte-compiled / optimized / DLL files
+
+secrete.json
+
 __pycache__/
 *.py[cod]
 *$py.class
