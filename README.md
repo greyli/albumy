@@ -28,6 +28,13 @@ or with Pipenv:
 $ pipenv install --dev
 $ pipenv shell
 ```
+If you do not have a Microsoft Azure account, create one at https://azure.microsoft.com/en-us/get-started/azure-portal
+
+Once logged in, create a Computer Vision service instance and take note of the API key and endpoint.
+
+Paste this data into the corresponding locations in the file albumy/blueprints/main.py
+
+
 generate fake data then run:
 ```
 $ flask forge
