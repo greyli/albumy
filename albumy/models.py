@@ -14,6 +14,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from albumy.extensions import db, whooshee
+from albumy.image_captioning_model import caption_image
 
 # relationship table
 roles_permissions = db.Table('roles_permissions',
@@ -240,7 +241,11 @@ class Photo(db.Model):
     collectors = db.relationship('Collect', back_populates='collected', cascade='all')
     tags = db.relationship('Tag', secondary=tagging, back_populates='photos')
 
-
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if self.description is None: 
+            self.description = caption_image(os.getcwd()+'/uploads/'+self.filename)
+    
 @whooshee.register_model('name')
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
