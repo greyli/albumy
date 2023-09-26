@@ -227,6 +227,7 @@ tagging = db.Table('tagging',
 class Photo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(500))
+    alt_text = db.Column(db.String(500))
     filename = db.Column(db.String(64))
     filename_s = db.Column(db.String(64))
     filename_m = db.Column(db.String(64))

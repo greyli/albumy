@@ -47,7 +47,7 @@
                 <tr>
                     <td>
                         <a href="{{ url_for('main.show_photo', photo_id=photo.id) }}">
-                            <img src="{{ url_for('main.get_image', filename=photo.filename_s) }}" width="250">
+                            <img alt="{{ photo.alt_text }}" src="{{ url_for('main.get_image', filename=photo.filename_s) }}" width="250">
                         </a>
                     </td>
                     <td>{{ photo.description }}</td>

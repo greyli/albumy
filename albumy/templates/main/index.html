@@ -30,6 +30,7 @@
                                 <a class="thumbnail" href="{{ url_for('.show_photo', photo_id=photo.id) }}"
                                    target="_blank">
                                     <img class="img-fluid"
+                                         alt="{{ photo.alt_text }}"
                                          src="{{ url_for('.get_image', filename=photo.filename_m) }}">
                                 </a>
                             </div>

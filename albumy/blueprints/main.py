@@ -7,6 +7,7 @@
 """
 import os
 
+from PIL import Image
 from flask import render_template, flash, redirect, url_for, current_app, \
     send_from_directory, request, abort, Blueprint
 from flask_login import login_required, current_user
@@ -18,6 +19,9 @@ from albumy.forms.main import DescriptionForm, TagForm, CommentForm
 from albumy.models import User, Photo, Tag, Follow, Collect, Comment, Notification
 from albumy.notifications import push_comment_notification, push_collect_notification
 from albumy.utils import rename_image, resize_image, redirect_back, flash_errors
+
+from albumy.get_ml_tags import get_tags
+from albumy.get_alternate_text import caption
 
 main_bp = Blueprint('main', __name__)
 
@@ -121,18 +125,34 @@ def get_avatar(filename):
 def upload():
     if request.method == 'POST' and 'file' in request.files:
         f = request.files.get('file')
+        img = Image.open(f)
+        ml_tag_list = get_tags(img)
+        alt_text = caption(img)
         filename = rename_image(f.filename)
         f.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename))
         filename_s = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['small'])
         filename_m = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['medium'])
         photo = Photo(
             filename=filename,
+            description=alt_text,
+            alt_text = alt_text,
             filename_s=filename_s,
             filename_m=filename_m,
             author=current_user._get_current_object()
         )
         db.session.add(photo)
         db.session.commit()
+        
+        for name in ml_tag_list:
+            tag = Tag.query.filter_by(name=name).first()
+            if tag is None:
+                tag = Tag(name=name)
+                db.session.add(tag)
+                db.session.commit()
+            if tag not in photo.tags:
+                photo.tags.append(tag)
+                db.session.commit()
+
     return render_template('main/upload.html')
 
 

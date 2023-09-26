@@ -113,3 +113,6 @@ uploads/avatars/*
 !uploads/avatars/.gitkeep
 
 whooshee
+model_base_capfilt_large.pth
+model_base_capfilt_large.pth:Zone.Identifier
+yolov8n.pt
