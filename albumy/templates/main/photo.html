@@ -9,7 +9,7 @@
         <div class="col-md-8">
             <div class="photo">
                 <a href="{{ url_for('.get_image', filename=photo.filename) }}" target="_blank">
-                    <img class="img-fluid" alt="{{ photo.alt_text }}" src="{{ url_for('.get_image', filename=photo.filename_m) }}">
+                    <img class="img-fluid" alt="{{ photo.description }}" src="{{ url_for('.get_image', filename=photo.filename_m) }}">
                 </a>
             </div>
             <a class="btn btn-primary btn-sm text-white" data-toggle="modal" data-target="#share-modal">Share</a>

@@ -127,15 +127,14 @@ def upload():
         f = request.files.get('file')
         img = Image.open(f)
         ml_tag_list = get_tags(img)
-        alt_text = caption(img)
+        description = caption(img)
         filename = rename_image(f.filename)
         f.save(os.path.join(current_app.config['ALBUMY_UPLOAD_PATH'], filename))
         filename_s = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['small'])
         filename_m = resize_image(f, filename, current_app.config['ALBUMY_PHOTO_SIZE']['medium'])
         photo = Photo(
             filename=filename,
-            description=alt_text,
-            alt_text = alt_text,
+            description=description,
             filename_s=filename_s,
             filename_m=filename_m,
             author=current_user._get_current_object()
