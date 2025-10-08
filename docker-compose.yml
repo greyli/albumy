@@ -5,7 +5,5 @@ services:
       dockerfile: Dockerfile
     container_name: nginx_server
     ports:
-      - "8000:8000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - "8000:80"
     restart: always
