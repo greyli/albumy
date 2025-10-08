@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: nginx_server
     ports:
-      - "80:80"
+      - "8000:8000"
     volumes:
       - ./index.html:/usr/share/nginx/html/index.html:ro
     restart: always
