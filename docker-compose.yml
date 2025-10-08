@@ -7,5 +7,5 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./index.html:/usr/share/nginx/html/index.html:ro
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: always
