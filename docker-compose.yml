@@ -1,0 +1,9 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: python_up
+    ports:
+      - "8000:80"
+    restart: always
